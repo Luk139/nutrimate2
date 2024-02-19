@@ -1,5 +1,3 @@
-// nutrient_tracker_home_page.dart
-// ignore_for_file: avoid_print
 import 'package:flutter/material.dart';
 import 'database_helper.dart';
 
@@ -13,6 +11,8 @@ class NutrientTrackerHomePage extends StatefulWidget {
 }
 
 class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
+  late Brightness _brightness;
+
   int _totalCalories = 0;
   int _totalCarbs = 0;
   int _totalFats = 0;
@@ -29,8 +29,15 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
     super.initState();
     _fetchNutrientsFromDatabase();
     _calculateStreak();
+    _brightness = WidgetsBinding.instance!.window.platformBrightness;
     // Fetch initial values from the database
   }
+
+  Color _getButtonTextColor(BuildContext context) {
+  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+  return isDarkMode ? Colors.white : Colors.black;
+}
+
 
   Future<void> _calculateStreak() async {
     final streak = await widget.databaseHelper.calculateStreak();
@@ -146,17 +153,18 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
     });
   }
 
-  Future<void> _showAddNutrientsDialog(BuildContext context) async {
+ Future<void> _showAddNutrientsDialog(BuildContext context) async {
+    final isLightMode = Theme.of(context).brightness == Brightness.light;
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          backgroundColor: Theme.of(context).brightness == Brightness.light
-              ? Colors.white // Light mode background color
-              : Colors.black, // Dark mode background color
-          title: const Text(
+          backgroundColor: isLightMode ? Colors.white : Colors.black,
+          title: Text(
             'Add Nutrients',
-            style: TextStyle(color: Color.fromARGB(255, 255, 255, 255)), // Title text color
+            style: TextStyle(
+              color: isLightMode ? Colors.black : Colors.white,
+            ),
           ),
           content: Column(
             children: [
@@ -172,9 +180,11 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text(
+              child: Text(
                 'Cancel',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(
+                  color: isLightMode ? Colors.black : Colors.white,
+                ),
               ),
             ),
             // Add button
@@ -194,9 +204,11 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
 
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text(
+              child: Text(
                 'Add',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(
+                  color: isLightMode ? Colors.black : Colors.white,
+                ),
               ),
             ),
           ],
@@ -206,16 +218,17 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
   }
 
   Future<void> _showSubtractNutrientsDialog(BuildContext context) async {
+    final isLightMode = Theme.of(context).brightness == Brightness.light;
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          backgroundColor: Theme.of(context).brightness == Brightness.light
-              ? Colors.green[50] // Light mode background color
-              : Colors.green[700], // Dark mode background color
-          title: const Text(
+          backgroundColor: isLightMode ? Colors.black : Colors.white,
+          title: Text(
             'Subtract Nutrients',
-            style: TextStyle(color: Colors.green), // Title text color
+            style: TextStyle(
+              color: isLightMode ? Colors.white : Colors.black,
+            ),
           ),
           content: Column(
             children: [
@@ -231,9 +244,11 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text(
+              child: Text(
                 'Cancel',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(
+                  color: isLightMode ? Colors.white : Colors.black,
+                ),
               ),
             ),
             // Subtract button
@@ -253,9 +268,11 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
 
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text(
+              child: Text(
                 'Subtract',
-                style: TextStyle(color: Colors.black),
+                style: TextStyle(
+                  color: isLightMode ? Colors.white : Colors.black,
+                ),
               ),
             ),
           ],
@@ -264,21 +281,6 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
     );
   }
 
-  Widget _buildNutrientWidget(String nutrientName, int nutrientCount) {
-    return Column(
-      children: <Widget>[
-        const SizedBox(height: 16),
-        Text(
-          'Total $nutrientName:',
-          style: TextStyle(fontSize: 18, color: Color.fromARGB(255, 0, 0, 0)),
-        ),
-        Text(
-          '$nutrientCount',
-          style: Theme.of(context).textTheme.headline6,
-        ),
-      ],
-    );
-  }
 
   Widget _buildNutrientTextField(String nutrientName, TextEditingController controller) {
     return TextField(
@@ -308,23 +310,25 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            _buildNutrientWidget('Calories', _totalCalories),
-            _buildNutrientWidget('Carbs', _totalCarbs),
-            _buildNutrientWidget('Fats', _totalFats),
-            _buildNutrientWidget('Protein', _totalProtein),
-            const SizedBox(height: 16), // Add some space between nutrient widgets
+            _buildNutrientWidget(context, 'Calories', _totalCalories),
+            _buildNutrientWidget(context, 'Carbs', _totalCarbs),
+            _buildNutrientWidget(context, 'Fats', _totalFats),
+            _buildNutrientWidget(context, 'Protein', _totalProtein),
             ElevatedButton(
               onPressed: () {
                 _resetNutrientsInDatabase();
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green, // Light mode button color
+backgroundColor: const Color(0xFF3EC067),
               ),
-              child: const SizedBox(
-                width: 200, // Set a fixed width for the button
+              child: SizedBox(
+                width: 200,
                 child: Text(
                   'Reset Nutrients',
-                  style: TextStyle(color: Colors.black), // Text color
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: _getButtonTextColor(context),
+                  ),
                 ),
               ),
             ),
@@ -334,13 +338,16 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
                 _showAddNutrientsDialog(context);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green, // Light mode button color
+backgroundColor: const Color(0xFF3EC067),
               ),
-              child: const SizedBox(
-                width: 200, // Set a fixed width for the button
+              child: SizedBox(
+                width: 200,
                 child: Text(
                   'Add Nutrients',
-                  style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)), // Text color
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: _getButtonTextColor(context),
+                  ),
                 ),
               ),
             ),
@@ -350,28 +357,40 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
                 _showSubtractNutrientsDialog(context);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green, // Light mode button color
+backgroundColor: const Color(0xFF3EC067),
               ),
-              child: const SizedBox(
-                width: 200, // Set a fixed width for the button
+              child: SizedBox(
+                width: 200,
                 child: Text(
                   'Subtract Nutrients',
-                  style: TextStyle(color: Colors.black), // Text color
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: _getButtonTextColor(context),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16), // Add some space
-            const Text(
-              'Current Streak:',
-              style: TextStyle(fontSize: 20),
-            ),
-            Text(
-              '$_streakCount days',
-              style: Theme.of(context).textTheme.headline6,
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildNutrientWidget(BuildContext context, String nutrientName, int nutrientCount) {
+    final Color textColor = Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black;
+
+    return Column(
+      children: <Widget>[
+        const SizedBox(height: 16),
+        Text(
+          'Total $nutrientName:',
+          style: TextStyle(fontSize: 18, color: textColor),
+        ),
+        Text(
+          '$nutrientCount',
+          style: TextStyle(fontSize: 24, color: textColor),
+        ),
+      ],
     );
   }
 }

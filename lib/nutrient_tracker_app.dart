@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:nutrimate/nutrient_tracker_home_page.dart';
 import 'database_helper.dart';
@@ -7,7 +8,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final databaseHelper = DatabaseHelper();
   runApp(MyApp(databaseHelper: databaseHelper));
-} 
+}
 
 class MyApp extends StatefulWidget {
   final DatabaseHelper databaseHelper;
@@ -24,7 +25,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       _currentThemeMode = _getThemeModeFromBrightness(
           MediaQuery.of(context).platformBrightness);
     });
@@ -44,12 +45,12 @@ class _MyAppState extends State<MyApp> {
 
   Color _getAppBarColor() {
     return _currentThemeMode == ThemeMode.dark
-        ? const Color(0xFF28C849)! // Dark mode color
-        : const Color(0xFF28C849); // Light mode color
+        ? Colors.transparent // Use black color for dark theme
+        : Colors.transparent; // Use transparent color for light theme
   }
 
   Color _getTextColor() {
-    return _currentThemeMode == ThemeMode.dark ? Colors.black : Colors.black;
+    return _currentThemeMode == ThemeMode.dark ? Colors.white : Colors.black;
   }
 
   @override
@@ -70,18 +71,18 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       theme: ThemeData(
         brightness: Brightness.light,
-        primaryColor:const Color(0xFF28C849),
+        primaryColor: Colors.green,
         // Add other theme properties as needed for the light theme
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        primaryColor:const Color(0xFF28C849)
+        primaryColor: Colors.green,
         // Add other theme properties as needed for the dark theme
       ),
       themeMode: _currentThemeMode,
       home: Scaffold(
         appBar: MyAppBar(
-          title: 'Nutrient Tracker',
+          title: '',
           textColor: _getTextColor(),
           backgroundColor: _getAppBarColor(),
           onToggleTheme: _toggleThemeMode,

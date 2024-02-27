@@ -153,6 +153,25 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
     });
   }
 
+Widget _buildDayStreakWidget(BuildContext context, int streakCount) {
+  final Color textColor = Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black;
+
+  return Column(
+    children: <Widget>[
+      const SizedBox(height: 16),
+      Text(
+        'Day Streak:',
+        style: TextStyle(fontSize: 18, color: textColor),
+      ),
+      Text(
+        '$streakCount',
+        style: TextStyle(fontSize: 24, color: textColor),
+      ),
+    ],
+  );
+}
+
+
  Future<void> _showAddNutrientsDialog(BuildContext context) async {
     final isLightMode = Theme.of(context).brightness == Brightness.light;
     showDialog(
@@ -304,77 +323,85 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _buildNutrientWidget(context, 'Calories', _totalCalories),
-            _buildNutrientWidget(context, 'Carbs', _totalCarbs),
-            _buildNutrientWidget(context, 'Fats', _totalFats),
-            _buildNutrientWidget(context, 'Protein', _totalProtein),
-            ElevatedButton(
-              onPressed: () {
-                _resetNutrientsInDatabase();
-              },
-              style: ElevatedButton.styleFrom(
-backgroundColor: const Color(0xFF3EC067),
-              ),
-              child: SizedBox(
-                width: 200,
-                child: Text(
-                  'Reset Nutrients',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: _getButtonTextColor(context),
-                  ),
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          // Total Nutrient widgets
+          _buildNutrientWidget(context, 'Calories', _totalCalories),
+          _buildNutrientWidget(context, 'Carbs', _totalCarbs),
+          _buildNutrientWidget(context, 'Fats', _totalFats),
+          _buildNutrientWidget(context, 'Protein', _totalProtein),
+          const SizedBox(height: 16), // Add some space
+          // Add buttons
+          ElevatedButton(
+            onPressed: () {
+              _resetNutrientsInDatabase();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF3EC067),
+            ),
+            child: SizedBox(
+              width: 200,
+              child: Text(
+                'Reset Nutrients',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: _getButtonTextColor(context),
                 ),
               ),
             ),
-            const SizedBox(height: 16), // Add some space
-            ElevatedButton(
-              onPressed: () {
-                _showAddNutrientsDialog(context);
-              },
-              style: ElevatedButton.styleFrom(
-backgroundColor: const Color(0xFF3EC067),
-              ),
-              child: SizedBox(
-                width: 200,
-                child: Text(
-                  'Add Nutrients',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: _getButtonTextColor(context),
-                  ),
+          ),
+          const SizedBox(height: 16), // Add some space
+          ElevatedButton(
+            onPressed: () {
+              _showAddNutrientsDialog(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF3EC067),
+            ),
+            child: SizedBox(
+              width: 200,
+              child: Text(
+                'Add Nutrients',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: _getButtonTextColor(context),
                 ),
               ),
             ),
-            const SizedBox(height: 16), // Add some space
-            ElevatedButton(
-              onPressed: () {
-                _showSubtractNutrientsDialog(context);
-              },
-              style: ElevatedButton.styleFrom(
-backgroundColor: const Color(0xFF3EC067),
-              ),
-              child: SizedBox(
-                width: 200,
-                child: Text(
-                  'Subtract Nutrients',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: _getButtonTextColor(context),
-                  ),
+          ),
+          const SizedBox(height: 16), // Add some space
+          ElevatedButton(
+            onPressed: () {
+              _showSubtractNutrientsDialog(context);
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF3EC067),
+            ),
+            child: SizedBox(
+              width: 200,
+              child: Text(
+                'Subtract Nutrients',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: _getButtonTextColor(context),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 16), // Add some space
+          // Day streak counter
+          _buildDayStreakWidget(context, _streakCount),
+        ],
       ),
-    );
-  }
+    ),
+  );
+}
+
+
 
   Widget _buildNutrientWidget(BuildContext context, String nutrientName, int nutrientCount) {
     final Color textColor = Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black;

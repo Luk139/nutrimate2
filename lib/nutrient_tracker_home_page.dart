@@ -235,70 +235,70 @@ Widget _buildDayStreakWidget(BuildContext context, int streakCount) {
       },
     );
   }
-
-  Future<void> _showSubtractNutrientsDialog(BuildContext context) async {
-    final isLightMode = Theme.of(context).brightness == Brightness.light;
-    showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          backgroundColor: isLightMode ? Colors.black : Colors.white,
-          title: Text(
-            'Subtract Nutrients',
-            style: TextStyle(
-              color: isLightMode ? Colors.white : Colors.black,
-            ),
+Future<void> _showSubtractNutrientsDialog(BuildContext context) async {
+  final isLightMode = Theme.of(context).brightness == Brightness.light;
+  showDialog(
+    context: context,
+    builder: (BuildContext dialogContext) {
+      return AlertDialog(
+        backgroundColor: isLightMode ? Colors.white : Colors.black,
+        title: Text(
+          'Subtract Nutrients',
+          style: TextStyle(
+            color: isLightMode ? Colors.black : Colors.white,
           ),
-          content: Column(
-            children: [
-              _buildNutrientTextField('Calories', _caloriesController),
-              _buildNutrientTextField('Carbs (g)', _carbsController),
-              _buildNutrientTextField('Fats (g)', _fatsController),
-              _buildNutrientTextField('Protein (g)', _proteinController),
-            ],
-          ),
-          actions: <Widget>[
-            // Cancel button
-            TextButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-              },
-              child: Text(
-                'Cancel',
-                style: TextStyle(
-                  color: isLightMode ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
-            // Subtract button
-            TextButton(
-              onPressed: () {
-                final int calories = int.tryParse(_caloriesController.text) ?? 0;
-                final int carbs = int.tryParse(_carbsController.text) ?? 0;
-                final int fats = int.tryParse(_fatsController.text) ?? 0;
-                final int protein = int.tryParse(_proteinController.text) ?? 0;
-
-                _subtractNutrientsFromDatabase(calories, carbs, fats, protein);
-
-                _caloriesController.clear();
-                _carbsController.clear();
-                _fatsController.clear();
-                _proteinController.clear();
-
-                Navigator.of(dialogContext).pop();
-              },
-              child: Text(
-                'Subtract',
-                style: TextStyle(
-                  color: isLightMode ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
+        ),
+        content: Column(
+          children: [
+            _buildNutrientTextField('Calories', _caloriesController),
+            _buildNutrientTextField('Carbs (g)', _carbsController),
+            _buildNutrientTextField('Fats (g)', _fatsController),
+            _buildNutrientTextField('Protein (g)', _proteinController),
           ],
-        );
-      },
-    );
-  }
+        ),
+        actions: <Widget>[
+          // Cancel button
+          TextButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+            },
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                color: isLightMode ? Colors.black : Colors.white,
+              ),
+            ),
+          ),
+          // Subtract button
+          TextButton(
+            onPressed: () {
+              final int calories = int.tryParse(_caloriesController.text) ?? 0;
+              final int carbs = int.tryParse(_carbsController.text) ?? 0;
+              final int fats = int.tryParse(_fatsController.text) ?? 0;
+              final int protein = int.tryParse(_proteinController.text) ?? 0;
+
+              _subtractNutrientsFromDatabase(calories, carbs, fats, protein);
+
+              _caloriesController.clear();
+              _carbsController.clear();
+              _fatsController.clear();
+              _proteinController.clear();
+
+              Navigator.of(dialogContext).pop();
+            },
+            child: Text(
+              'Subtract',
+              style: TextStyle(
+                color: isLightMode ? Colors.black : Colors.white,
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
 
   Widget _buildNutrientTextField(String nutrientName, TextEditingController controller) {

@@ -3,7 +3,7 @@ package="com.lukasfey.nutrimate">
     
 
     <application
-        android:label="nutrimate"
+        android:label="nutrimate updated gui"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

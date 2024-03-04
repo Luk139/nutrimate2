@@ -11,11 +11,12 @@ if (localPropertiesFile.exists()) {
         localProperties.load(reader)
     }
 }
-
+def flutterVersionCode = 2 // Incremented version code
+/*
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
-}
+    flutterVersionCode = '2'
+}*/
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {

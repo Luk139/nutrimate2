@@ -11,7 +11,7 @@ if (localPropertiesFile.exists()) {
         localProperties.load(reader)
     }
 }
-def flutterVersionCode = 2 // Incremented version code
+def flutterVersionCode = 3 // Incremented version code
 /*
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {

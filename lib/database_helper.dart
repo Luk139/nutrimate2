@@ -112,24 +112,30 @@ Future<void> addNutrients(int calories, int carbs, int fats, int protein) async 
 
 
 @override
-  Future<void> subtractNutrients(int calories, int carbs, int fats, int protein, Function callback) async {
-    final db = await database;
+Future<void> subtractNutrients(int calories, int carbs, int fats, int protein, Function callback) async {
+  final db = await database;
 
-    // Calculate calorie adjustment based on subtracted fats, carbs, and protein
-    final calorieAdjustment = (fats * 9) + (carbs * 4) + (protein * 4);
+  // Calculate the calorie adjustment based on subtracted nutrients
+  final calorieAdjustment = (carbs * 4) + (fats * 9) + (protein * 4);
 
-    // Subtract adjusted values from the database
-    await db.insert(
-      'nutrients',
-      {'calories': -calorieAdjustment, 'carbs': -carbs, 'fats': -fats, 'protein': -protein},
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+  // Subtract adjusted values from the database
+  await db.insert(
+    'nutrients',
+    {
+      'calories': -calories - calorieAdjustment,
+      'carbs': -carbs,
+      'fats': -fats,
+      'protein': -protein,
+    },
+    conflictAlgorithm: ConflictAlgorithm.replace,
+  );
 
-    // Call the callback function provided by the calling code
-    callback();
+  // Call the callback function provided by the calling code
+  callback();
 
-    // Note: Do not fetch nutrients here; let the calling code handle it
-  }
+  // Note: Do not fetch nutrients here; let the calling code handle it
+}
+
 
 
 

@@ -141,17 +141,30 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
     await _calculateStreak(); // Call _calculateStreak() after updating streak count
   }
 
-  void _subtractNutrientsFromDatabase(int calories, int carbs, int fats, int protein) async {
-    // Calculate calories if only grams are provided
-    if (calories == 0) {
-      calories = (fats * 9) + (carbs * 4) + (protein * 4);
-    }
+void _subtractNutrientsFromDatabase(int calories, int carbs, int fats, int protein) async {
+  // Ensure that nutrient values are not negative
+  final currentNutrients = await widget.databaseHelper.fetchNutrients();
+  final currentCalories = currentNutrients['calories'] ?? 0;
+  final currentCarbs = currentNutrients['carbs'] ?? 0;
+  final currentFats = currentNutrients['fats'] ?? 0;
+  final currentProtein = currentNutrients['protein'] ?? 0;
 
-    await widget.databaseHelper.subtractNutrients(calories, carbs, fats, protein, () {
-      // Fetch nutrients from the database after subtracting nutrients
-      _fetchNutrientsFromDatabase();
-    });
+  if (calories > currentCalories ||
+      carbs > currentCarbs ||
+      fats > currentFats ||
+      protein > currentProtein) {
+    // Handle the case where nutrient values are attempted to be subtracted more than the current value
+    // Maybe show a message to the user
+    return;
   }
+
+  await widget.databaseHelper.subtractNutrients(calories, carbs, fats, protein, () {
+    // Fetch nutrients from the database after subtracting nutrients
+    _fetchNutrientsFromDatabase();
+  });
+}
+
+
 
 Widget _buildDayStreakWidget(BuildContext context, int streakCount) {
   final Color textColor = Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black;

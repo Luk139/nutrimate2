@@ -39,6 +39,11 @@ class DatabaseHelper implements AbstractDatabaseHelper {
   }
 
   // Initialize the last nutrient added date
+  //This might need to be changes. It initializes        
+  //id INTEGER PRIMARY KEY, calories INTEGER, carbs INTEGER, fats INTEGER, protein INTEGER)
+  //but actually, it should get initialised with the date aswell. I added it below because I was not sure wether I wanted it that way or not, 
+  //but it would be smarter to initialise the database with a current date
+
 
 Future<Database> initDatabase() async {
   final dbPath = await getDatabasesPath();

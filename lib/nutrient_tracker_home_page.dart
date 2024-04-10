@@ -11,7 +11,6 @@ class NutrientTrackerHomePage extends StatefulWidget {
 }
 
 class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
-  late Brightness _brightness;
 
   int _totalCalories = 0;
   int _totalCarbs = 0;
@@ -29,7 +28,6 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
     super.initState();
     _fetchNutrientsFromDatabase();
     _calculateStreak();
-    _brightness = WidgetsBinding.instance!.window.platformBrightness;
     // Fetch initial values from the database
   }
 
@@ -113,33 +111,34 @@ class _NutrientTrackerHomePageState extends State<NutrientTrackerHomePage> {
     setState(() {});
   }
 
-  void _addNutrientsToDatabase(int calories, int carbs, int fats, int protein) async {
-    // Calculate calories if only grams are provided
-    if (calories == 0) {
-      calories = (fats * 9) + (carbs * 4) + (protein * 4);
-    }
-
-    // Get the current date
-    DateTime currentDate = DateTime.now();
-
-    // Get the date of the last nutrient added
-    DateTime lastNutrientAddedDate = _getLastNutrientAddedDate();
-
-    // If the last nutrient was added on a different day, increase the streak count
-    if (currentDate.difference(lastNutrientAddedDate).inDays > 0) {
-      await _increaseStreakCount(); // Await here if _increaseStreakCount() is asynchronous
-    }
-
-    // Update the last nutrient added date in the database
-    _updateLastNutrientAddedDate(currentDate);
-
-    // Add nutrients to the database
-    await widget.databaseHelper.addNutrients(calories, carbs, fats, protein);
-
-    // Fetch nutrients from the database after adding nutrients
-    _fetchNutrientsFromDatabase();
-    await _calculateStreak(); // Call _calculateStreak() after updating streak count
+void _addNutrientsToDatabase(int calories, int carbs, int fats, int protein) async {
+  // Calculate calories if only grams are provided
+  if (calories == 0) {
+    calories = (fats * 9) + (carbs * 4) + (protein * 4);
   }
+
+  // Get the current date
+  DateTime currentDate = DateTime.now();
+
+  // Get the date of the last nutrient added
+  DateTime lastNutrientAddedDate = _getLastNutrientAddedDate();
+
+  // If the last nutrient was added on a different day, increase the streak count
+  if (currentDate.difference(lastNutrientAddedDate).inDays > 0) {
+    await _increaseStreakCount(); // Await here if _increaseStreakCount() is asynchronous
+  }
+
+  // Update the last nutrient added date in the database
+  _updateLastNutrientAddedDate(currentDate);
+
+  // Add nutrients to the database
+  await widget.databaseHelper.addNutrients(calories, carbs, fats, protein);
+
+  // Fetch nutrients from the database after adding nutrients
+  _fetchNutrientsFromDatabase();
+  await _calculateStreak(); // Call _calculateStreak() after updating streak count
+}
+
 
 void _subtractNutrientsFromDatabase(int calories, int carbs, int fats, int protein) async {
   // Ensure that nutrient values are not negative
